@@ -32,30 +32,18 @@ componentDidMount() {
 
 this.socket = new WebSocket('ws://localhost:3001');
 
- // this.socket.onopen = function () {
- //    console.log('Client connected...');
- //  };
+this.socket.addEventListener('message', (event) => {
+      console.log('Got a message on App.jsx');
 
- //  // connection.onerror = function (error) {
- //  //   // an error occurred when sending/receiving data
- //  // };
-
-
-
-// this.socket.addEventListener('message', (event) => {
-//       console.log('Got a message');
-//       console.log(event.data);
-//       const newMessages = this.state.messages;
-//       const messageObject = JSON.parse(event.data);
-//       newMessages.push(messageObject);
-//       this.setState({messages: newMessages});
-//     });
+      const newMessages = this.state.messages;
+      const messageObject = JSON.parse(event.data);
+      newMessages.push(messageObject);
+      this.setState({messages: newMessages});
+      console.log(event.data);
+    });
 
 
 }
-
-
-
 
 sendMessage(text){
   console.log("sending " +text)
@@ -64,9 +52,18 @@ sendMessage(text){
     username: this.state.currentUser,
     content: text
   }
+  this.socket.send(JSON.stringify(newMessage) , 'message');  // Sends the data intake by keyinput to the server
+}
 
-  this.socket.send(JSON.stringify(newMessage));
-
+changeUsername(newUsername){
+  this.setState({currentUser: newUsername});
+  const newuser = {
+    id: this.index,
+    username: newUsername,
+    content: this.state.content
+  }
+  this.socket.send(JSON.stringify(newuser), 'message');
+  //TO DO : Send a system message saying that the user changed their name.
 }
 
 
@@ -75,7 +72,7 @@ sendMessage(text){
        <div>
            <NavBar/>
            <MessageList messages={ this.state.messages}/>
-           <ChatBar user={ this.state.currentUser} sendMessage={text => this.sendMessage(text)}/>
+           <ChatBar changeUsername={text => this.changeUsername(text)} sendMessage={text => this.sendMessage(text)}/>
        </div>
    );
  }
