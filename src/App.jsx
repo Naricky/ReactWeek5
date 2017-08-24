@@ -22,32 +22,17 @@ class App extends Component {
    constructor() {
        super();
        this.state = {
+
            currentUser: ChattyData.currentUser.name,
-           messages: ChattyData.messages
+           messages: ChattyData.messages,
+           oldName: null
        }
-       this.index = 4;
+
    }
-
-componentDidMount() {
-
-this.socket = new WebSocket('ws://localhost:3001');
-
-this.socket.addEventListener('message', (event) => {
-      console.log('Got a message on App.jsx');
-
-      const newMessages = this.state.messages;
-      const messageObject = JSON.parse(event.data);
-      newMessages.push(messageObject);
-      this.setState({messages: newMessages});
-      console.log(event.data);
-    });
-
-
-}
-
 sendMessage(text){
   console.log("sending " +text)
   const newMessage = {
+    type: "postMessage",
     id: this.index,
     username: this.state.currentUser,
     content: text
@@ -55,17 +40,50 @@ sendMessage(text){
   this.socket.send(JSON.stringify(newMessage) , 'message');  // Sends the data intake by keyinput to the server
 }
 
+
 changeUsername(newUsername){
+  this.setState({oldName: this.state.currentUser});
   this.setState({currentUser: newUsername});
-  const newuser = {
+  const newUser = {
+    type: "postNotification",
     id: this.index,
     username: newUsername,
     content: this.state.content
   }
-  this.socket.send(JSON.stringify(newuser), 'message');
+  console.log("this is user", JSON.stringify(newUser))
+  this.socket.send(JSON.stringify(newUser), 'message');
   //TO DO : Send a system message saying that the user changed their name.
 }
 
+
+
+componentDidMount() {
+
+this.socket = new WebSocket('ws://localhost:3001');
+
+this.socket.addEventListener('message', (event) => {
+      console.log('Got a message on App.jsx');
+      const newMessages = this.state.messages;
+      const messageObject = JSON.parse(event.data);
+
+  if(messageObject.type === "incomingMessage"){
+      newMessages.push(messageObject);
+      this.setState({messages: newMessages});
+      console.log(event.data);
+} else if (messageObject.type === "incomingNotification") {
+
+      newMessages.push({content: messageObject.username + "is the new name from" + this.state.oldName});
+
+      this.setState({messages: newMessages});
+      console.log(event.data);
+
+}
+
+
+    });
+
+
+}
 
  render() {
    return (

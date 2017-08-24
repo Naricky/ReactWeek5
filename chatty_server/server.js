@@ -25,17 +25,31 @@ wss.on('connection', (ws) => {
 
 ws.on('message', (message) => {
 
-    console.log('Got a message');
+    console.log('Got a message',message);
     const receivedMessage = JSON.parse(message);
+  if(receivedMessage.type === "postMessage"){
     const newReceivedMessage = {
+          type: "incomingMessage",
           id: uuidv1(),
           username: receivedMessage.username,
           content: receivedMessage.content
       }
-    console.log (newReceivedMessage)
-
     wss.broadcast(JSON.stringify(newReceivedMessage));
-  });
+  } else if (receivedMessage.type === "postNotification"){
+    console.log("CHANGED USERNAME")
+    const newReceivedMessage = {
+          type: "incomingNotification",
+          id: uuidv1(),
+          username: receivedMessage.username,
+          content: receivedMessage.content
+      }
+    wss.broadcast(JSON.stringify(newReceivedMessage));
+
+  }
+
+
+
+});
 
 wss.broadcast = function broadcast(data) {
   wss.clients.forEach(function each(client) {
