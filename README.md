@@ -15,7 +15,7 @@ Visit localhost:3000 to use app
 
 ![Feature1](Feature1.png)
 
-![Username](Username.png)
+![Usercount](Usercount.png)
 
 ### Dependencies
 
