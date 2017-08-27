@@ -14,8 +14,6 @@ const server = express()
   .use(express.static('public'))
   .listen(PORT, '0.0.0.0', 'localhost', () => console.log(`Listening on ${ PORT }`));
 
-
-
 // Create the WebSockets server
 const wss = new SocketServer({ server });
 wss.broadcast = function broadcast(data) {
@@ -26,19 +24,17 @@ wss.broadcast = function broadcast(data) {
   });
 };
 
-function updateUserCount() {
+function updateUserCount() { // Function enabling userCount and broadcasint
    const userCount = { type: "count", userCount:wss.clients.size};
    wss.broadcast(JSON.stringify(userCount));
 }
-// Set up a callback that will run when a client connects to the server
-// When a client connects they are assigned a socket, represented by
-// the ws parameter in the callback.
-wss.on('connection', (ws) => {
+
+wss.on('connection', (ws) => { // Once connected...
   console.log('Client connected');
 
     updateUserCount();
 
-ws.on('message', (message) => {
+ws.on('message', (message) => { // Receives message from the App
 
     console.log('Got a message',message);
     const receivedMessage = JSON.parse(message);
@@ -58,19 +54,10 @@ ws.on('message', (message) => {
           username: receivedMessage.username,
           content: receivedMessage.content
       }
+  wss.broadcast(JSON.stringify(newReceivedMessage));
   }
-
-    wss.broadcast(JSON.stringify(newReceivedMessage));
-
-
-
-
-
 });
 
-
-
-// Set up a callback for when a client closes the socket. This usually means they closed their browser.
  ws.on('close', () => {
 
     console.log('Client disconnected');
@@ -78,8 +65,3 @@ ws.on('message', (message) => {
   });
 
 });
-
-
-
-
-

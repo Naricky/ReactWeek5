@@ -19,15 +19,15 @@ onMessageKeyPress2(e){
 }
 
 
-render() {
-  return (
-  <div>
-    <footer className="chatbar">
-      <input className="chatbar-username" placeholder="Your Name (Optional)" onKeyUp={(e) => this.onMessageKeyPress2(e)}/>
-      <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyUp={(e) => this.onMessageKeyPress(e)}/>
-    </footer>
-  </div>
-)
-}
+  render() {
+    return (
+    <div>
+      <footer className="chatbar">
+        <input className="chatbar-username" placeholder="Your Name (Optional)" onKeyUp={(e) => this.onMessageKeyPress2(e)}/>
+        <input className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyUp={(e) => this.onMessageKeyPress(e)}/>
+      </footer>
+    </div>
+    )
+  }
 }
 export default ChatBar;
