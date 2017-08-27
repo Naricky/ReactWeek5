@@ -1,7 +1,9 @@
 Chatty App
 =====================
 
-A single page, chatroom web app developed for lighthouse labs week 5 project
+A single page, chatroom web app.
+Project intended for Lighthouselab week 5.
+features include : Content upload, Username change notification, User logged in notification.
 
 ### Usage
 
@@ -10,6 +12,10 @@ Run npm start in both directories to start app server and socket server
 Visit localhost:3000 to use app
 
 ## Screenshot for the project
+
+![Feature1](Feature1.png)
+
+![Username](Username.png)
 
 ### Dependencies
 
